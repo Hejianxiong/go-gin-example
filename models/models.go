@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"github.com/HeJianxiong/go-gin-example/pkg/logging"
 	"log"
 	"time"
 
@@ -27,7 +28,7 @@ func init() {
 
 	sec, err := setting.Cfg.GetSection("database")
 	if err != nil {
-		log.Fatal(2, "Fail to get section 'database': %v", err)
+		logging.Fatal(2, "Fail to get section 'database': %v", err)
 	}
 	dbType = sec.Key("TYPE").String()
 	dbName = sec.Key("NAME").String()
@@ -47,7 +48,7 @@ func init() {
 	}
 
 	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
-		return tablePrefix + defaultTableName;
+		return tablePrefix + defaultTableName
 	}
 
 	db.SingularTable(true)

@@ -3,6 +3,7 @@ package v1
 import (
 	"github.com/HeJianxiong/go-gin-example/models"
 	"github.com/HeJianxiong/go-gin-example/pkg/custerr"
+	"github.com/HeJianxiong/go-gin-example/pkg/logging"
 	"github.com/HeJianxiong/go-gin-example/pkg/setting"
 	"github.com/HeJianxiong/go-gin-example/pkg/util"
 	"github.com/astaxie/beego/validation"
@@ -21,7 +22,7 @@ func GetArticle(c *gin.Context) {
 
 	code := custerr.INVALID_PARAMS
 	var data interface{}
-	if ! valid.HasErrors() {
+	if !valid.HasErrors() {
 		if models.ExistArticleByID(id) {
 			data = models.GetArticle(id)
 			code = custerr.SUCCESS
@@ -30,7 +31,7 @@ func GetArticle(c *gin.Context) {
 		}
 	} else {
 		for _, err := range valid.Errors {
-			log.Printf("custerr.key: %s, custerr.message: %s", err.Key, err.Message)
+			logging.Info("custerr.key: %s, custerr.message: %s", err.Key, err.Message)
 		}
 	}
 
@@ -64,7 +65,7 @@ func GetArticles(c *gin.Context) {
 	}
 
 	code := custerr.INVALID_PARAMS
-	if ! valid.HasErrors() {
+	if !valid.HasErrors() {
 		code = custerr.SUCCESS
 
 		data["lists"] = models.GetArticles(util.GetPage(c), setting.PageSize, maps)
@@ -101,7 +102,7 @@ func AddArticle(c *gin.Context) {
 	valid.Range(state, 0, 1, "state").Message("状态只允许0或1")
 
 	code := custerr.INVALID_PARAMS
-	if ! valid.HasErrors() {
+	if !valid.HasErrors() {
 		if models.ExistTagByID(tagId) {
 			data := make(map[string]interface{})
 			data["tag_id"] = tagId
@@ -154,7 +155,7 @@ func EditArticle(c *gin.Context) {
 	valid.MaxSize(modifiedBy, 100, "modified_by").Message("修改人最长为100字符")
 
 	code := custerr.INVALID_PARAMS
-	if ! valid.HasErrors() {
+	if !valid.HasErrors() {
 		if models.ExistArticleByID(id) {
 			if models.ExistTagByID(tagId) {
 				data := make(map[string]interface{})
@@ -202,7 +203,7 @@ func DeleteArticle(c *gin.Context) {
 	valid.Min(id, 1, "id").Message("ID必须大于0")
 
 	code := custerr.INVALID_PARAMS
-	if ! valid.HasErrors() {
+	if !valid.HasErrors() {
 		if models.ExistArticleByID(id) {
 			models.DeleteArticle(id)
 			code = custerr.SUCCESS
